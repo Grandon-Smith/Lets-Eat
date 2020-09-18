@@ -1,4 +1,7 @@
+'use strict';
+
 let apiKey = "d68772bd487fd3b02862992c8d3ccb7c"
+let baseUrl = "https://developers.zomato.com/api/v2.1"
 
 function listStates() {
     return `
@@ -59,8 +62,38 @@ function listStates() {
          `
 }
 
+function displayCityMatches(responseJson) {
+    $('main').html(
+        `
+        `
+    )
+}
+
+function makeFirstFetch(query) {
+    const options = {
+        headers: new Headers({
+        "user-key": apiKey
+        })
+    };
+    fetch(query, options)
+        .then(response => response.json())
+        .then(responseJson => displayCityMatches(responseJson))
+        .catch(err => {
+            $('header').append('something went wrong!');
+        });
+    }
+
+
 function formatSearch() {
-    
+    $('main').on('click', '#submitsearch', event => {
+        event.preventDefault();
+        let city = $('#citysearch').val().toLowerCase();
+        let state = $('#statesearch').val();
+        let query = encodeURI(baseUrl + "/cities?q=" + city)
+        console.log(query);
+        makeFirstFetch(query);
+    })
+
 }
 
 function generateHeader() {
@@ -79,22 +112,16 @@ function generateSearchScreen() {
     <div class="search-screen">
         <form class="search-form">
             <formfield>
-                <legend><h3>Fill in the form!</h3></legend>
+                <legend><h3>In What city do you want to eat?</h3></legend>
                 <p>
-                    <label for="citysearch">City or Town: </label>
+                    <label for="citysearch">City: </label>
                     <input type="text" placeholder="boston" id="citysearch" class="search">
                 </p>
                 <p>
-                    <label for="statesearch">State Initials: </label>
-                    ${listStates()}
-                </p>
-                <p>OR</p>
-                <p>
-                    <label for="restaurantsearch">Restaurant: </label>
-                    <input type="text" placeholder="Restaurant Name" id="restaurantsearch" class="search">
+                ${listStates()}
                 </p>
                 <p>
-                <input type="submit" id="submitsearch" class="submitsearch" value="Search">
+                <input type="button" id="submitsearch" class="submitsearch" value="Search">
                 </p>
             </formfield>
         </form>
@@ -109,7 +136,8 @@ function renderSearchScreen() {
 };
 
 function runApp() {
-    renderSearchScreen()
+    renderSearchScreen();
+    formatSearch();
 }
 
 
