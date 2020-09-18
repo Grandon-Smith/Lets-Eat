@@ -1,0 +1,38 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    outline: blue dotted 1px;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+header {
+    font-size: 1.4rem;
+    background-color: tan;
+    border: 2px black dashed;
+    display: flex;
+    justify-content: space-around;
+}
+
+main {
+    font-size: 1.1rem;
+}
+
+.intro-screen-div, .search-screen {
+    background-color: rgba(46, 186, 189, .6);
+    border: 2px solid black;
+    margin: 15rem auto 0 auto;
+    padding-bottom: 1rem;
+    max-width: 500px;
+    border-radius: 20px;
+}
+
+.intro-screen-div {
+    text-align: center;
+}
+
+.search-form {
+    padding-left: 5rem;
+}
