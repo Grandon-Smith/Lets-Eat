@@ -62,14 +62,24 @@ function listStates() {
          `
 }
 
-function displayCityMatches(responseJson) {
-    $('main').html(
-        `
+
+function displayCityMatches(responseJson, state) {
+    console.log(responseJson);
+    let divs = "";
+    let array = responseJson.location_suggestions;
+    for (let i = 0; i < array.length; i++) {
+        if (array[i].state_code === state) {
+        divs += `<div class="item"><button>#CITY in ${array[i].state_code}</button></div>`
+        }
+    }
+    $('main').html(`
+        <div class="group">${divs}</div>
         `
     )
+    $('header').html(generateHeader())
 }
 
-function makeFirstFetch(query) {
+function makeFirstFetch(query, state) {
     const options = {
         headers: new Headers({
         "user-key": apiKey
@@ -77,11 +87,11 @@ function makeFirstFetch(query) {
     };
     fetch(query, options)
         .then(response => response.json())
-        .then(responseJson => displayCityMatches(responseJson))
+        .then(responseJson => displayCityMatches(responseJson, state))
         .catch(err => {
-            $('header').append('something went wrong!');
+            $('header').append(`'something went wrong!' ${err.message}`);
         });
-    }
+}
 
 
 function formatSearch() {
@@ -91,7 +101,9 @@ function formatSearch() {
         let state = $('#statesearch').val();
         let query = encodeURI(baseUrl + "/cities?q=" + city)
         console.log(query);
-        makeFirstFetch(query);
+        // is there a better way to pass state to displayCityMatches()??
+        makeFirstFetch(query, state);
+        
     })
 
 }
@@ -99,9 +111,9 @@ function formatSearch() {
 function generateHeader() {
     return `
     <header>
-        <input type="button" value="Back to Search" id="back-to-search">
+        <input type="button" value="Back to Search" id="back-to-search" >
         <h1>Restaurant Finder</h1>
-        <input type="button" value="Sort" id="sort">
+        <input type="button" value="Sort" id="sort" class="hidden">
     </header>
     `
 }
