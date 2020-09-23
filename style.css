@@ -1,5 +1,6 @@
 *, *::before, *::after {
     box-sizing: border-box;
+    /* outline: blue dotted 1px; */
 }
 
 body {
@@ -8,20 +9,36 @@ body {
 }
 
 header {
-    font-size: 1.3rem;
     background-color: tan;
     border: 2px black dashed;
     display: flex;
     justify-content: space-around;
+    width: 100%;
+    margin: 3px;
 }
 
 header > h1 {
+    font-size: 1.7rem; 
     text-align: center;
-    margin: 1rem;
+    margin: .6rem;
+}
+
+header > input {
+    width: 75px;
+    white-space: normal;
+    text-align:center;
 }
 
 main {
     font-size: 1.1rem;
+}
+
+h4 {
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    height: 2.5rem;
+    padding: 0 5%;
 }
 
 .intro-screen-div, .search-screen {
@@ -38,7 +55,7 @@ main {
 }
 
 .search-form {
-    padding-left: 5rem;
+    padding-left: 3rem;
 }
 
 .group {
@@ -58,7 +75,7 @@ main {
     width: 80%;
     border-radius: 20px;
     min-width: 75px;
-    height: 2.5rem;
+    height: auto;
 }
 
 .hidden {
@@ -69,3 +86,49 @@ main {
     text-align: center;
 }
 
+.restimg {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin: auto auto;
+}
+
+.imgcontainer {
+    max-width: 45%;
+    display: flex;
+}
+.restcontainer {
+    margin: 1rem auto;
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+}
+
+.restbox {
+    background-color: rgba(46, 186, 189, .6);
+    border: 1px solid black;
+    margin: .5rem auto;
+    padding: .4rem;
+    width: 100%;
+    border-radius: 5px;
+    min-width: 75px;
+    /* height: auto; */
+}
+
+.restcontent {
+    display: flex;
+    
+}
+
+.resttext {
+    display: flex;
+    flex-direction: column;
+    margin-left: .7rem;
+    max-width: 55%;
+}
+.resttext p {
+    margin: .2rem 0;
+    padding: 0;
+    max-width: 100%;
+    font-size: 1rem;
+}

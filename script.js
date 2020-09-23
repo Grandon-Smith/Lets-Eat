@@ -67,16 +67,61 @@ let store = {
     cuisineId: "",
     count: 0,
     coordinates: "",
+    data: "",
     zomatoApiKey: "d68772bd487fd3b02862992c8d3ccb7c",
     zomatoUrl: "https://developers.zomato.com/api/v2.1",
     bingMapsApiKey: "AnnFV0tkI_aBvhCKFib2wC518fghzw5ibbxd1WuV6U72bzXZf8KJrqA-wG2afdNH",
     bingMapsUrl: "https://dev.virtualearth.net/REST/v1/Locations?key=AnnFV0tkI_aBvhCKFib2wC518fghzw5ibbxd1WuV6U72bzXZf8KJrqA-wG2afdNH&query="
  };
 
+//-----------------EVENT LISTENER TO GO BACK TO CUISINE CHOICE SCREEN-------------
+function backToCuisineChoice() {
+    $('header').on('click', '#backToCuisine', event => {
+        $('main').html(renderMoreCriteriaScreen())
+    })
+}
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
+ //---------- DISPLAY RESTAURANTS WITH DATA ----------------------------
 
+function generateRestaurantDivs(responseJson) {
+    let divs = "";
+    store.data = responseJson; 
+    console.log(store.data)
+    for (let i = 0; i < store.data.restaurants.length; i++) {
+        console.log(store.data.restaurants[i].restaurant.name)
+        if (store.data) {
+        divs += `
+            <div class="restbox" id="${store.data.restaurants[i]}">
+        <h4 class="restname">${store.data.restaurants[i].restaurant.name}</h4>
+        <div class="restcontent">
+            <div class="imgcontainer">
+                <img src="photos/stockfood.jpg" class="restimg">
+            </div>
+            <div class="resttext">
+                <p>Call: <a href="tel:${store.data.restaurants[i].restaurant.phone_numbers}">
+                    ${store.data.restaurants[i].restaurant.phone_numbers}</a></p>
+                <p>Rating: ${store.data.restaurants[i].restaurant.user_rating.aggregate_rating}/5</p>
+                <p><a href = ${store.data.restaurants[i].restaurant.menu_url} target="_blank">Menu</a></p>
+                <p>Address: ${store.data.restaurants[i].restaurant.location.address}</p>
+            </div>
+        </div> 
+    </div>
+        `
+        }
+    }
+    $('main').html(`
+<h3 class="center">Restaurants:</h3>
+<div class="restcontainer">${divs}</div>
+        `
+    )
+    $('header').html(generateHeader())
+    $('#backToSearch').removeClass('hidden')
+    $('#backToCuisine').removeClass('hidden')
+}
+//||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
-
+//--------------FINAL SEARCH FETCH FOR RESTAURANTS USING USER CHOICES---------
  function makeSearchFetch(query) {
     const options = {
         headers: new Headers({
@@ -85,9 +130,9 @@ let store = {
     };
     fetch(query, options)
         .then(response => response.json())
-        .then(responseJson => console.log(responseJson))
+        .then(responseJson => generateRestaurantDivs(responseJson))
         .catch(err => {
-            $('header').append(`'something went wrong!' ${err.message}`);
+            $('main').append(`'something went wrong!' ${err.message}`);
         });
 }
 
@@ -109,6 +154,9 @@ let store = {
 //     string = string.charAt(0).toUpperCase() + string.slice(1);
 //     return string;
 // }
+
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
  //----------------------GET CITY COORDINATES & SAVE TO STORE OBJ------------------------------
 function checkCuisineArray() {
     $('main').on('click', '#moreCriteria', event => {
@@ -122,7 +170,7 @@ function checkCuisineArray() {
             if(cuisineChoice === store.cuisines[0][i].cuisine.cuisine_name) {
                 store.cuisineId = store.cuisines[0][i].cuisine.cuisine_id;
                 console.log(store.cuisineId)
-                let q = `/search?count=${store.count}&lat=${store.coordinates[0]}&lon=${store.coordinates[1]}&cuisines=${store.cuisineId}`
+                let q = `/search?count=${store.count}&lat=${store.coordinates[0]}&lon=${store.coordinates[1]}&cuisines=${store.cuisineId}&radius=5000`
                 let query = encodeURI(store.zomatoUrl + q)
                 console.log(query);
                 makeSearchFetch(query)
@@ -154,6 +202,7 @@ function checkCuisineArray() {
     </div>
     `
 }
+//---------------GETTING LOCATION DATA-----------------------------------
 
 function storeLongAndLat(responseJson) {
     store.coordinates = responseJson.resourceSets[0].resources[0].bbox;
@@ -175,6 +224,9 @@ function formatMapsQuery(name) {
     makeSecondFetch(mapsQuery)
 }
 
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+//----------------GETTING CUISINE ARRAY #---------------------------------
 function pushToCuisneObj(responseJson) {
     store.cuisines.push(responseJson.cuisines)
 }
@@ -201,14 +253,17 @@ function saveLongAndLatAndCuisine() {
     $('main').on('click', '.item', event => {
         event.preventDefault();
         store.name = $(event.currentTarget).text()
+        store.name = "Main Street " + store.name;
         store.cityId = $(event.currentTarget).attr('id')
         let name = store.name;
+        console.log(name)
         let state = store.cityId;
         $('main').html(renderMoreCriteriaScreen());
         formatMapsQuery(name);
         formatCuisineQuery(state)
     })
 }
+
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 //--------------------- CREATE BACK BUTTON TO RETURN TO SEARCH SCREEN-----------------
@@ -277,11 +332,11 @@ function formatSearch() {
 
 function generateHeader() {
     return `
-    <header>
+ 
         <input type="submit" value="Back to Search" id="backToSearch" class="hidden" >
         <h1>Restaurant Finder</h1>
-        <input type="button" value="Sort" id="sort" class="hidden">
-    </header>
+        <input type="button" value="Back to Cuisine Choice" id="backToCuisine" class="hidden">
+
     `
 }
 
@@ -320,8 +375,8 @@ function runApp() {
     formatSearch();
     saveLongAndLatAndCuisine();
     clickBackToSearch();
-    // formatSearchQuery();
     checkCuisineArray();
+    backToCuisineChoice();
 }
 
 
