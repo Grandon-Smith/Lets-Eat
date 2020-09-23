@@ -78,6 +78,7 @@ let store = {
 function backToCuisineChoice() {
     $('header').on('click', '#backToCuisine', event => {
         $('main').html(renderMoreCriteriaScreen())
+        $('#backToCuisine').addClass('hidden')
     })
 }
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
