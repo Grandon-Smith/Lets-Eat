@@ -1,10 +1,5 @@
 'use strict';
 
-let zomatoApiKey = "d68772bd487fd3b02862992c8d3ccb7c";
-let zomatoUrl = "https://developers.zomato.com/api/v2.1";
-let bingMapsApiKey = "AnnFV0tkI_aBvhCKFib2wC518fghzw5ibbxd1WuV6U72bzXZf8KJrqA-wG2afdNH";
-let bingMapsUrl = "https://dev.virtualearth.net/REST/v1/Locations?key=AnnFV0tkI_aBvhCKFib2wC518fghzw5ibbxd1WuV6U72bzXZf8KJrqA-wG2afdNH&query=";
-
 function listStates() {
     return `
     <select name="state" id="statesearch" class="search" required>
@@ -66,38 +61,78 @@ function listStates() {
 
 let store = {
     city: "",
-    state: "",
-    name: ""
+    cityId: 0,
+    name: "",
+    cuisines: [],
+    cuisineId: "",
+    count: 0,
+    coordinates: "",
+    zomatoApiKey: "d68772bd487fd3b02862992c8d3ccb7c",
+    zomatoUrl: "https://developers.zomato.com/api/v2.1",
+    bingMapsApiKey: "AnnFV0tkI_aBvhCKFib2wC518fghzw5ibbxd1WuV6U72bzXZf8KJrqA-wG2afdNH",
+    bingMapsUrl: "https://dev.virtualearth.net/REST/v1/Locations?key=AnnFV0tkI_aBvhCKFib2wC518fghzw5ibbxd1WuV6U72bzXZf8KJrqA-wG2afdNH&query="
+ };
 
-};
 
-//----------------------GET CITY ID AND NARROWING SEARCH QUERY DOWN------------------------------
 
-function storeLongAndLat(responseJson) {
-    console.log(responseJson)
-}
 
-function makeSecondFetch(mapsQuery) {
-    // const options = {
-    //     headers: new Headers({
-    //     "user-key": bingMapsUrl
-    //     })
-    // };
-    fetch(mapsQuery)
+
+ function makeSearchFetch(query) {
+    const options = {
+        headers: new Headers({
+        "user-key": store.zomatoApiKey
+        })
+    };
+    fetch(query, options)
         .then(response => response.json())
-        .then(responseJson => storeLongAndLat(responseJson))
+        .then(responseJson => console.log(responseJson))
         .catch(err => {
             $('header').append(`'something went wrong!' ${err.message}`);
         });
-};
-
-function formatMapsQuery(name) {
-    let mapsQuery = encodeURI(bingMapsUrl + name)
-    makeSecondFetch(mapsQuery)
 }
 
+// function formatThirdQuery() {
+    // $('main').on('click', '#moreCriteria', event => {
+    //     event.preventDefault();
+        // store.cuisine = $('#cuisine').val().toLowerCase();
+//         store.count = $('#count').val();
+//         let q = `/search?count=${store.count}&lat=${store.coordinates[0]}&lon=${store.coordinates[1]}&cuisines=${store.cuisineId}`
+//         let query = encodeURI(store.zomatoUrl + q)
+//         // https://developers.zomato.com/api/v2.1/search?count=10&lat=40.7&lon=-74&cuisines=25
+//         console.log(query);
+//         makeSearchFetch(query)
+//     })
+// }
 
-function renderMoreCriteriaScreen() {
+// function formatCuisineSearch(string) {
+//     string = string.toLowerCase();
+//     string = string.charAt(0).toUpperCase() + string.slice(1);
+//     return string;
+// }
+ //----------------------GET CITY COORDINATES & SAVE TO STORE OBJ------------------------------
+function checkCuisineArray() {
+    $('main').on('click', '#moreCriteria', event => {
+        event.preventDefault()
+        let cuisineChoice = $('#cuisine').val()
+        store.count = $('#count').val();
+        // cuisineChoice = $(formatCuisineSearch(cuisineChoice));
+        
+        store.count = $('#count').val();
+        for (let i = 0; i < store.cuisines[0].length; i++) {
+            if(cuisineChoice === store.cuisines[0][i].cuisine.cuisine_name) {
+                store.cuisineId = store.cuisines[0][i].cuisine.cuisine_id;
+                console.log(store.cuisineId)
+                let q = `/search?count=${store.count}&lat=${store.coordinates[0]}&lon=${store.coordinates[1]}&cuisines=${store.cuisineId}`
+                let query = encodeURI(store.zomatoUrl + q)
+                console.log(query);
+                makeSearchFetch(query)
+            }
+            
+        }
+    })
+}
+
+ function renderMoreCriteriaScreen() {
     return `
     <div class="search-screen">
         <form class="search-form">
@@ -108,37 +143,85 @@ function renderMoreCriteriaScreen() {
                     <input type="text" placeholder="Italian" id="cuisine" class="search" required>
                 </p>
                 <p>
-                <input type="button" id="submitsearch" class="submitsearch" value="Search">
+                <label for="count">Number of Results (max 100): </label>
+                <input type="text" placeholder="10" id="count" class="search" required>
+            </p>
+                <p>
+                <input type="submit" id="moreCriteria" class="submitsearch" value="Search">
                 </p>
             </formfield>
         </form>
     </div>
     `
 }
- 
-function saveGetLongAndLat() {
-    $('main').on('click', '.item', event => {
-        event.preventDefault();
-        let name = $('.item').attr('id')
-        console.log(name)
-        store.name = name;
 
-        $('main').html(renderMoreCriteriaScreen());
-        formatMapsQuery(name);
-    })
+function storeLongAndLat(responseJson) {
+    store.coordinates = responseJson.resourceSets[0].resources[0].bbox;
+    console.log(responseJson)
 }
 
+function makeSecondFetch(mapsQuery) {
+    fetch(mapsQuery)
+        .then(response => response.json())
+        .then(responseJson => storeLongAndLat(responseJson))
+        .catch(err => {
+            $('header').append(`'something went wrong!' ${err.message}`);
+        });
+};
 
+ 
+function formatMapsQuery(name) {
+    let mapsQuery = encodeURI(store.bingMapsUrl + name)
+    makeSecondFetch(mapsQuery)
+}
+
+function pushToCuisneObj(responseJson) {
+    store.cuisines.push(responseJson.cuisines)
+}
+
+ function makeCuisineFetch(cuisineQuery) {
+    const options = {
+        headers: new Headers({
+        "user-key": store.zomatoApiKey
+        })
+    };
+    fetch(cuisineQuery, options)
+        .then(response => response.json())
+        .then(responseJson => pushToCuisneObj(responseJson))
+        .catch(err => {
+            $('header').append(`'Cuisine is spighet!' ${err.message}`);
+        });
+}
+function formatCuisineQuery(state) {
+    let cuisineQuery = encodeURI(store.zomatoUrl + "/cuisines?city_id=" + state)
+    makeCuisineFetch(cuisineQuery)
+}
+
+function saveLongAndLatAndCuisine() {
+    $('main').on('click', '.item', event => {
+        event.preventDefault();
+        store.name = $(event.currentTarget).text()
+        store.cityId = $(event.currentTarget).attr('id')
+        let name = store.name;
+        let state = store.cityId;
+        $('main').html(renderMoreCriteriaScreen());
+        formatMapsQuery(name);
+        formatCuisineQuery(state)
+    })
+}
+//|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
+//--------------------- CREATE BACK BUTTON TO RETURN TO SEARCH SCREEN-----------------
 
 function clickBackToSearch() {
-
     $('header').on('click', '#backToSearch', event => {
         event.preventDefault()
         console.log("Back to search ran")
-//         $('main').empty();
+        $('#backToSearch').addClass('hidden');
         $('main').html(generateSearchScreen());
     })
 }
+//||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 
 //------------------- EVENT LISTENER FOR STATE AND CITY INPUTS----------------------
@@ -150,7 +233,7 @@ function displayCityMatches(responseJson, state) {
     for (let i = 0; i < array.length; i++) {
         if (array[i].state_code === state) {
         divs += `
-        <div class="item" id="${array[i].name}"><button>${array[i].name}</button></div>
+        <div class="item" id="${array[i].id}"><button>${array[i].name}</button></div>
         `
         }
     }
@@ -160,12 +243,14 @@ function displayCityMatches(responseJson, state) {
         `
     )
     $('header').html(generateHeader())
+    $('#backToSearch').removeClass('hidden')
 };
+
 
 function makeFirstFetch(query, state) {
     const options = {
         headers: new Headers({
-        "user-key": zomatoApiKey
+        "user-key": store.zomatoApiKey
         })
     };
     fetch(query, options)
@@ -180,10 +265,9 @@ function makeFirstFetch(query, state) {
 function formatSearch() {
     $('main').on('click', '#submitsearch', event => {
         event.preventDefault();
-        let city = $('#citysearch').val().toLowerCase();
+        store.city = $('#citysearch').val().toLowerCase();
         let state = $('#statesearch').val();
-        let query = encodeURI(zomatoUrl + "/cities?q=" + city)
-        console.log(query);
+        let query = encodeURI(store.zomatoUrl + "/cities?q=" + store.city)
         // is there a better way to pass state to displayCityMatches()??
         makeFirstFetch(query, state);
     })
@@ -194,7 +278,7 @@ function formatSearch() {
 function generateHeader() {
     return `
     <header>
-        <input type="submit" value="Back to Search" id="backToSearch" class="abc" >
+        <input type="submit" value="Back to Search" id="backToSearch" class="hidden" >
         <h1>Restaurant Finder</h1>
         <input type="button" value="Sort" id="sort" class="hidden">
     </header>
@@ -227,7 +311,6 @@ function generateSearchScreen() {
 function renderSearchScreen() {
     $('main').on('click','#jsLetsGo', event => {
         event.preventDefault();
-        console.log("renderSearchScreen ran");
         $('main').html(generateSearchScreen());
     })
 };
@@ -235,8 +318,10 @@ function renderSearchScreen() {
 function runApp() {
     renderSearchScreen();
     formatSearch();
-    saveGetLongAndLat();
+    saveLongAndLatAndCuisine();
     clickBackToSearch();
+    // formatSearchQuery();
+    checkCuisineArray();
 }
 
 
