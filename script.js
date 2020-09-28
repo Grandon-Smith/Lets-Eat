@@ -150,23 +150,24 @@ function generateRestaurantDivs(responseJson) {
 //     })
 // }
 
-// function formatCuisineSearch(string) {
-//     string = string.toLowerCase();
-//     string = string.charAt(0).toUpperCase() + string.slice(1);
-//     return string;
-// }
+function formatCuisineSearch(string) {
+    let string2 = string.toLowerCase();
+    let string3 = string2.charAt(0).toUpperCase() + string.slice(1);
+    return string3;
+}
 
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
  //----------------------GET CITY COORDINATES & SAVE TO STORE OBJ------------------------------
 function checkCuisineArray() {
-    $('main').on('click', '#moreCriteria', event => {
-        event.preventDefault()
-        let cuisineChoice = $('#cuisine').val()
-        store.count = $('#count').val();
-        // cuisineChoice = $(formatCuisineSearch(cuisineChoice));
+    $('main').on('submit', '.food', event => {
+        event.preventDefault();
+        let choice = $('#cuisine').val();
+        let cuisineChoice = formatCuisineSearch(choice);
         
         store.count = $('#count').val();
+        console.log(store.count)
+        
         for (let i = 0; i < store.cuisines[0].length; i++) {
             if(cuisineChoice === store.cuisines[0][i].cuisine.cuisine_name) {
                 store.cuisineId = store.cuisines[0][i].cuisine.cuisine_id;
@@ -174,17 +175,16 @@ function checkCuisineArray() {
                 let q = `/search?count=${store.count}&lat=${store.coordinates[0]}&lon=${store.coordinates[1]}&cuisines=${store.cuisineId}&radius=5000`
                 let query = encodeURI(store.zomatoUrl + q)
                 console.log(query);
-                makeSearchFetch(query)
+                makeSearchFetch(query);
             }
-            
-        }
+        } 
     })
 }
 
  function renderMoreCriteriaScreen() {
     return `
     <div class="search-screen">
-        <form class="search-form">
+        <form class="search-form food">
             <formfield>
                 <legend><h3>What kind of food do you want?</h3></legend>
                 <p>
@@ -192,7 +192,7 @@ function checkCuisineArray() {
                     <input type="text" placeholder="Italian" id="cuisine" class="search" required>
                 </p>
                 <p>
-                <label for="count">Number of Results (max 100): </label>
+                <label for="count">Number of Results (max 20): </label>
                 <input type="text" placeholder="10" id="count" class="search" required>
             </p>
                 <p>
@@ -228,7 +228,7 @@ function formatMapsQuery(name) {
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 //----------------GETTING CUISINE ARRAY #---------------------------------
-function pushToCuisneObj(responseJson) {
+function pushToCuisineObj(responseJson) {
     store.cuisines.push(responseJson.cuisines)
 }
 
@@ -240,7 +240,7 @@ function pushToCuisneObj(responseJson) {
     };
     fetch(cuisineQuery, options)
         .then(response => response.json())
-        .then(responseJson => pushToCuisneObj(responseJson))
+        .then(responseJson => pushToCuisineObj(responseJson))
         .catch(err => {
             $('header').append(`'Cuisine is spighet!' ${err.message}`);
         });
@@ -275,6 +275,7 @@ function clickBackToSearch() {
         console.log("Back to search ran")
         $('#backToSearch').addClass('hidden');
         $('main').html(generateSearchScreen());
+        $('#backToCuisine').addClass('hidden')
     })
 }
 //||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -285,13 +286,14 @@ function clickBackToSearch() {
 function displayCityMatches(responseJson, state) {
     console.log(responseJson);
     let divs = "";
-    let array = responseJson.location_suggestions;
-    for (let i = 0; i < array.length; i++) {
-        if (array[i].state_code === state) {
+    let matchArray = responseJson.location_suggestions;
+    for (let i = 0; i < matchArray.length; i++) {
+        if (matchArray[i].state_code === state) {
         divs += `
-        <div class="item" id="${array[i].id}"><button>${array[i].name}</button></div>
+        <div class="item" id="${matchArray[i].id}"><button>${matchArray[i].name}</button></div>
         `
-        }
+        }  
+
     }
     $('main').html(`
     <div class="center"><h3>Choose Location:</h3></div>
@@ -319,13 +321,15 @@ function makeFirstFetch(query, state) {
 
 
 function formatSearch() {
-    $('main').on('click', '#submitsearch', event => {
+    $('main').on('submit', '.location', event => {
         event.preventDefault();
         store.city = $('#citysearch').val().toLowerCase();
         let state = $('#statesearch').val();
+        console.log(store.city)
         let query = encodeURI(store.zomatoUrl + "/cities?q=" + store.city)
         // is there a better way to pass state to displayCityMatches()??
         makeFirstFetch(query, state);
+        
     })
 };
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -345,18 +349,19 @@ function generateHeader() {
 function generateSearchScreen() {
     return `
     <div class="search-screen">
-        <form class="search-form">
+        <form class="search-form location">
             <formfield>
-                <legend><h3>In What city do you want to eat?</h3></legend>
+                <legend><h3>Where do you want to eat?</h3></legend>
                 <p>
                     <label for="citysearch">City: </label>
                     <input type="text" placeholder="boston" id="citysearch" class="search" required>
                 </p>
                 <p>
-                ${listStates()}
+                    <label for="statesearch">State: </label>
+                    ${listStates()}
                 </p>
                 <p>
-                <input type="button" id="submitsearch" class="submitsearch" value="Search">
+                    <input type="submit" id="submitsearch" class="submitsearch" value="Search">
                 </p>
             </formfield>
         </form>
