@@ -297,7 +297,7 @@ p #count {
 
 @media only screen and (min-width: 800px) {
     body {
-        background-image: url("/photos/desktop-cover.jpg")
+        background-image: url("../photos/desktop-cover.jpg")
     }
     
     header h1 {
