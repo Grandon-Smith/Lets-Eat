@@ -7,7 +7,7 @@ body {
     margin: 0;
     font-family: courgette, arial;
     height: 100vh;
-    background-image: url("photos/mobile-cover.png");
+    background-image: url("./photos/mobile-cover.png");
     background-size: cover;
     background-repeat: repeat;
 }
@@ -297,7 +297,7 @@ p #count {
 
 @media only screen and (min-width: 800px) {
     body {
-        background-image: url("photos/desktop-cover.jpg")
+        background-image: url("../photos/desktop-cover.jpg")
     }
     
     header h1 {
