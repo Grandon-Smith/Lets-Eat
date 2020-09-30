@@ -378,7 +378,6 @@ function formatSearch() {
         store.city = $('#citysearch').val().toLowerCase();
         let state = $('#statesearch').val();
         let query = encodeURI(store.zomatoUrl + "/cities?q=" + store.city)
-        // is there a better way to pass state to displayCityMatches()??
         makeFirstFetch(query, state);
         
     })

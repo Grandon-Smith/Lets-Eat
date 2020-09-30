@@ -7,7 +7,7 @@ body {
     margin: 0;
     font-family: courgette, arial;
     height: 100vh;
-    background-image: url("/photos/mobile-cover.jpg");
+    background-image: url("restaurant-finder/photos/mobile-cover.jpg");
     background-size: cover;
     background-repeat: repeat;
 }
@@ -80,7 +80,6 @@ h2 {
 }
 
 h4 {
-    /* text-align: center; */
     width: 100%;
     font-size: 1.3rem;
     margin: 5px 0 0px 0;
