@@ -7,7 +7,7 @@ body {
     margin: 0;
     font-family: courgette, arial;
     height: 100vh;
-    background-image: url("photos/mobile-cover.jpg");
+    background-image: url("photos/mobile-cover.png");
     background-size: cover;
     background-repeat: repeat;
 }
