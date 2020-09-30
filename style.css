@@ -1,52 +1,114 @@
 *, *::before, *::after {
     box-sizing: border-box;
-    /* outline: blue dotted 1px; */
 }
 
 body {
     padding: 0;
     margin: 0;
+    font-family: courgette, arial;
+    height: 100vh;
+    background-image: url("/photos/mobile-cover.jpg");
+    background-size: cover;
+    background-repeat: repeat;
 }
 
+
+
 header {
-    background-color: tan;
-    border: 2px black dashed;
+    background-color: rgba(65, 155, 53, 0.753);
+    border-bottom: 1px black solid;
+    text-align: center;
+    min-width: 100%;
+    min-height: 4rem;
+    height: auto;
     display: flex;
-    justify-content: space-around;
-    width: 100%;
-    margin: 3px;
+    justify-content: space-between;
+    align-items: center;
 }
 
 header > h1 {
-    font-size: 1.7rem; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 55%;
+    max-width: 65%;
+    font-size: 2rem; 
     text-align: center;
-    margin: .6rem;
+    margin: 0 auto;
+    height: 100%;
+    color: white;
 }
 
 header > input {
-    width: 75px;
+    max-width: 60px;
+    min-height: 50px;
     white-space: normal;
-    text-align:center;
+    text-align: center;
+    font-size: .8rem;
+    border-radius: 10px;
+    background-color: white;
 }
 
-main {
-    font-size: 1.1rem;
+.backtosearchbutton {
+    margin-left: 2%;
+    border: none;
+}
+
+.backtosearchbutton:hover {
+    cursor: pointer;
+    border: 2px solid black;
+}
+
+.cuisinechoicebutton {
+    margin-right: 2%;
+    border: none;
+}
+
+.cuisinechoicebutton:hover {
+    cursor: pointer;
+    border: 2px solid black;
+}
+
+h3 {
+    font-size: 1.5rem;
+    color: black;
+
+}
+
+h2 {
+    font-size: 1.25rem;
 }
 
 h4 {
-    text-align: center;
+    /* text-align: center; */
     width: 100%;
-    margin: 0;
-    height: 2.5rem;
+    font-size: 1.3rem;
+    margin: 5px 0 0px 0;
+    height: auto;
     padding: 0 5%;
 }
 
+legend {
+    margin: -1rem 0;
+}
+
+main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 3%;
+    margin: auto auto;
+}
+
 .intro-screen-div, .search-screen {
-    background-color: rgba(46, 186, 189, .6);
-    border: 2px solid black;
-    margin: 5rem auto 0 auto;
-    padding-bottom: 1rem;
-    max-width: 500px;
+    background-color: rgba(46, 186, 189, .85);
+    border: 1px solid black;
+    margin-top: 5rem;
+    padding: .5rem;
+    width: 100%;
+    min-width: 300px;
+    max-width: 700px;
     border-radius: 20px;
 }
 
@@ -54,32 +116,111 @@ h4 {
     text-align: center;
 }
 
+.city-not-found {
+    background-color: rgba(46, 186, 189, .85);
+    border: 1px solid black;
+    margin-top: 5rem;
+    padding: .5rem;
+    width: 100%;
+    height: 6rem;
+    min-width: 330px;
+    max-width: 700px;
+    border-radius: 20px;
+}
+
+.lets-go {
+    min-width: 5rem;
+    min-height: 5rem;
+    border-radius: 50%;
+    font-size: 1rem;
+    font-family: arial;
+    border: 1px black solid;
+    background-color: rgba(65, 155, 53, .9);
+    font-weight: bold;
+    color: white;
+}
+
+.lets-go:hover {
+    cursor: pointer;
+    text-decoration: underline;
+    background-color: green;
+}
+
 .search-form {
-    padding-left: 3rem;
+    padding: 5px;
+
+}
+
+.ffield {
+    text-align: center;
+    border: rgba(255, 255, 255, 0.959) inset 2px;
+    border-radius: 10px;
+}
+
+.submitsearch {
+    min-width: 6rem;
+    min-height: 2rem;
+    margin-top: 5%;
+    font-size: 1.1rem;
+    border-radius: 5px;
+    background-color: rgba(65, 155, 53, .9);
+    border: 1px solid black;
+}
+
+.submitsearch:hover {
+    cursor: pointer;
+    background-color: green;
 }
 
 .group {
-    margin: 4rem auto;
+    margin: 0 auto 2rem auto;
     display: flex;
+    align-items: center;
     flex-direction: column;
     width: 90%;
-    
 }
 
 .item {
-    background-color: rgba(46, 186, 189, .6);
+    background-color: rgba(146, 89, 192, 0.8);
     border: 1px solid black;
     text-align: center;
-    margin: .5rem auto;
-    padding: .4rem;
-    width: 80%;
+    margin: .5rem 0;
     border-radius: 20px;
-    min-width: 75px;
-    height: auto;
+    width: 100%;
+    min-width: 200px;
+    max-width: 350px;
+    height: 2.5rem;
+}
+
+.item > button {
+    background: none;
+    border: none;
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    font-size: 1rem;
+    color: white;
+}
+
+.item > button:hover {
+    color: white;
+    cursor: pointer;
+    background-color: yellow;
+    color: black;
 }
 
 .hidden {
-    display: none;
+    color: transparent;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    pointer-events: none;
+}
+
+.hidden:hover {
+    border: none;
+    cursor: default;
+    pointer-events: none;
 }
 
 .center {
@@ -91,6 +232,7 @@ h4 {
     max-width: 100%;
     height: auto;
     margin: auto auto;
+    border: 1px black solid;
 }
 
 .imgcontainer {
@@ -102,17 +244,17 @@ h4 {
     display: flex;
     flex-direction: column;
     width: 90%;
+    max-width: 900px;
 }
 
 .restbox {
-    background-color: rgba(46, 186, 189, .6);
+    background-color: rgba(46, 186, 189, .8);
     border: 1px solid black;
     margin: .5rem auto;
     padding: .4rem;
     width: 100%;
     border-radius: 5px;
-    min-width: 75px;
-    /* height: auto; */
+    min-width: 250px;
 }
 
 .restcontent {
@@ -124,7 +266,9 @@ h4 {
     display: flex;
     flex-direction: column;
     margin-left: .7rem;
+    padding-bottom: 5%;
     max-width: 55%;
+    justify-content: center;
 }
 .resttext p {
     margin: .2rem 0;
@@ -133,10 +277,50 @@ h4 {
     font-size: 1rem;
 }
 
+.label {
+    font-weight: bold;
+}
 
-@media only screen and (min-width: 600px) {
-    main {
-        margin-left: 15%;
-        margin-right: 15%;
+p #count {
+    width: 50px;
+}
+
+#statesearch {
+    font-family: arial;
+}
+
+@media only screen and (min-width: 520px) {
+    .restname {
+        height: 2.5rem;
+        margin-bottom: 10px;
+    }
+}
+
+@media only screen and (min-width: 800px) {
+    body {
+        background-image: url("/photos/desktop-cover.jpg")
+    }
+    
+    header h1 {
+        font-size: 3rem;
+    }
+
+    h3 {
+        font-size: 2.3rem;
+    }
+
+    h4 {
+        font-size: 1.6rem;
+    }
+
+    .resttext  {
+        margin-left: 5%
+    }
+
+    .restbox p {
+        font-size: 1.3rem;
+    }
+    p {
+        font-size: 1.3rem;
     }
 }

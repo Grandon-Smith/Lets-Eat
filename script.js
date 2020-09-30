@@ -71,7 +71,21 @@ let store = {
     zomatoApiKey: "d68772bd487fd3b02862992c8d3ccb7c",
     zomatoUrl: "https://developers.zomato.com/api/v2.1",
     bingMapsApiKey: "AnnFV0tkI_aBvhCKFib2wC518fghzw5ibbxd1WuV6U72bzXZf8KJrqA-wG2afdNH",
-    bingMapsUrl: "https://dev.virtualearth.net/REST/v1/Locations?key=AnnFV0tkI_aBvhCKFib2wC518fghzw5ibbxd1WuV6U72bzXZf8KJrqA-wG2afdNH&query="
+    bingMapsUrl: "https://dev.virtualearth.net/REST/v1/Locations?key=AnnFV0tkI_aBvhCKFib2wC518fghzw5ibbxd1WuV6U72bzXZf8KJrqA-wG2afdNH&query=",
+    photos: ["/photos/burger-and-fries.jpg", 
+    "/photos/fruit-and-crackers.jpg", 
+    "/photos/dumplings.jpg", 
+    "/photos/pasta.jpg", 
+    "/photos/pizza.jpg", 
+    "/photos/salad.jpg", 
+    "/photos/stockfood.jpg", 
+    "/photos/seafood.jpg", 
+    "/photos/soup-with-herbs.jpg", 
+    "/photos/pasta-and-cheese.jpg", 
+    "/photos/fruit-platter.jpg", 
+    "/photos/yogurt-with-peaches.jpg", 
+    "/photos/breakfast-waffles.jpg", 
+    "/photos/porkchop.jpg"]
  };
 
 //-----------------EVENT LISTENER TO GO BACK TO CUISINE CHOICE SCREEN-------------
@@ -85,6 +99,13 @@ function backToCuisineChoice() {
 
  //---------- DISPLAY RESTAURANTS WITH DATA ----------------------------
 
+function chooseRandomImage() {
+    let photoNumber = Math.floor(Math.random() * store.photos.length);
+    let photo = store.photos[photoNumber];
+    console.log(photoNumber);
+    return photo;
+}
+
 function generateRestaurantDivs(responseJson) {
     let divs = "";
     store.data = responseJson; 
@@ -97,14 +118,14 @@ function generateRestaurantDivs(responseJson) {
         <h4 class="restname">${store.data.restaurants[i].restaurant.name}</h4>
         <div class="restcontent">
             <div class="imgcontainer">
-                <img src="photos/stockfood.jpg" class="restimg">
+                <img src=${chooseRandomImage()} class="restimg">
             </div>
             <div class="resttext">
-                <p>Call: <a href="tel:${store.data.restaurants[i].restaurant.phone_numbers}">
+                <p><span class="label">Call:</span> <a href="tel:${store.data.restaurants[i].restaurant.phone_numbers[0]}">
                     ${store.data.restaurants[i].restaurant.phone_numbers}</a></p>
-                <p>Rating: ${store.data.restaurants[i].restaurant.user_rating.aggregate_rating}/5</p>
-                <p><a href = ${store.data.restaurants[i].restaurant.menu_url} target="_blank">Menu</a></p>
-                <p>Address: ${store.data.restaurants[i].restaurant.location.address}</p>
+                <p><span class="label">Rating:</span> ${store.data.restaurants[i].restaurant.user_rating.aggregate_rating}/5</p>
+                <p><a href = ${store.data.restaurants[i].restaurant.menu_url} target="_blank"><span class="label">Menu</span></a></p>
+                <p><span class="label">Address:</span> ${store.data.restaurants[i].restaurant.location.address}</p>
             </div>
         </div> 
     </div>
@@ -137,19 +158,6 @@ function generateRestaurantDivs(responseJson) {
         });
 }
 
-// function formatThirdQuery() {
-    // $('main').on('click', '#moreCriteria', event => {
-    //     event.preventDefault();
-        // store.cuisine = $('#cuisine').val().toLowerCase();
-//         store.count = $('#count').val();
-//         let q = `/search?count=${store.count}&lat=${store.coordinates[0]}&lon=${store.coordinates[1]}&cuisines=${store.cuisineId}`
-//         let query = encodeURI(store.zomatoUrl + q)
-//         // https://developers.zomato.com/api/v2.1/search?count=10&lat=40.7&lon=-74&cuisines=25
-//         console.log(query);
-//         makeSearchFetch(query)
-//     })
-// }
-
 function formatCuisineSearch(string) {
     let string2 = string.toLowerCase();
     let string3 = string2.charAt(0).toUpperCase() + string.slice(1);
@@ -164,20 +172,33 @@ function checkCuisineArray() {
         event.preventDefault();
         let choice = $('#cuisine').val();
         let cuisineChoice = formatCuisineSearch(choice);
-        
         store.count = $('#count').val();
-        console.log(store.count)
-        
+        console.log(store.cuisines[0])
+        let cuisineNameArray = [];
         for (let i = 0; i < store.cuisines[0].length; i++) {
-            if(cuisineChoice === store.cuisines[0][i].cuisine.cuisine_name) {
-                store.cuisineId = store.cuisines[0][i].cuisine.cuisine_id;
-                console.log(store.cuisineId)
-                let q = `/search?count=${store.count}&lat=${store.coordinates[0]}&lon=${store.coordinates[1]}&cuisines=${store.cuisineId}&radius=5000`
-                let query = encodeURI(store.zomatoUrl + q)
-                console.log(query);
-                makeSearchFetch(query);
+            cuisineNameArray.push(store.cuisines[0][i].cuisine.cuisine_name);
+            if (cuisineNameArray.length === store.cuisines[0].length) {
+                if (cuisineNameArray.includes(cuisineChoice)) {
+                    let n = cuisineNameArray.indexOf(cuisineChoice)
+                    console.log(cuisineNameArray)
+                    console.log(n)
+                    if (store.count < 21 && store.count > 0) {
+                            store.cuisineId = store.cuisines[0][n].cuisine.cuisine_id;
+                            console.log(store.cuisines[0][n].cuisine.cuisineId)
+                            let q = `/search?count=${store.count}&lat=${store.coordinates[0]}&lon=${store.coordinates[1]}&cuisines=${store.cuisineId}&radius=5000`;
+                            let query = encodeURI(store.zomatoUrl + q);
+                            console.log(query);
+                            makeSearchFetch(query);
+                    } else {
+                        alert("Please choose a value between 1 and 20");
+                    }
+                } else {
+                    alert("Sorry, that cuisine isn't an option. Please try another.");
+                    break; 
+                } 
             }
-        } 
+        }
+        
     })
 }
 
@@ -185,20 +206,20 @@ function checkCuisineArray() {
     return `
     <div class="search-screen">
         <form class="search-form food">
-            <formfield>
+            <fieldset class="ffield">
                 <legend><h3>What kind of food do you want?</h3></legend>
                 <p>
                     <label for="cuisine">Cuisine: </label>
                     <input type="text" placeholder="Italian" id="cuisine" class="search" required>
                 </p>
                 <p>
-                <label for="count">Number of Results (max 20): </label>
-                <input type="text" placeholder="10" id="count" class="search" required>
-            </p>
-                <p>
-                <input type="submit" id="moreCriteria" class="submitsearch" value="Search">
+                    <label for="count">Number of Results (max 20): </label>
+                    <input type="text" placeholder="10" id="count" class="search" required>
                 </p>
-            </formfield>
+                <p>
+                    <input type="submit" id="moreCriteria" class="submitsearch" value="Search">
+                </p>
+            </fieldset>
         </form>
     </div>
     `
@@ -207,7 +228,6 @@ function checkCuisineArray() {
 
 function storeLongAndLat(responseJson) {
     store.coordinates = responseJson.resourceSets[0].resources[0].bbox;
-    console.log(responseJson)
 }
 
 function makeSecondFetch(mapsQuery) {
@@ -257,7 +277,6 @@ function saveLongAndLatAndCuisine() {
         store.name = "Main Street " + store.name;
         store.cityId = $(event.currentTarget).attr('id')
         let name = store.name;
-        console.log(name)
         let state = store.cityId;
         $('main').html(renderMoreCriteriaScreen());
         formatMapsQuery(name);
@@ -272,7 +291,6 @@ function saveLongAndLatAndCuisine() {
 function clickBackToSearch() {
     $('header').on('click', '#backToSearch', event => {
         event.preventDefault()
-        console.log("Back to search ran")
         $('#backToSearch').addClass('hidden');
         $('main').html(generateSearchScreen());
         $('#backToCuisine').addClass('hidden')
@@ -284,7 +302,6 @@ function clickBackToSearch() {
 //------------------- EVENT LISTENER FOR STATE AND CITY INPUTS----------------------
 
 function displayCityMatches(responseJson, state) {
-    console.log(responseJson);
     let divs = "";
     let matchArray = responseJson.location_suggestions;
     for (let i = 0; i < matchArray.length; i++) {
@@ -293,15 +310,24 @@ function displayCityMatches(responseJson, state) {
         <div class="item" id="${matchArray[i].id}"><button>${matchArray[i].name}</button></div>
         `
         }  
-
     }
-    $('main').html(`
-    <div class="center"><h3>Choose Location:</h3></div>
-        <div class="group">${divs}</div>
-        `
-    )
-    $('header').html(generateHeader())
-    $('#backToSearch').removeClass('hidden')
+    if (divs !== ``) {
+        $('main').html(`
+            <div class="center"><h3>Choose Location:</h3></div>
+            <div class="group">${divs}</div>
+            `
+        )
+        $('header').html(generateHeader())
+        $('#backToSearch').removeClass('hidden')
+    } else if (divs === ``) {
+        $('main').html(`
+        <div class="city-not-found">
+            <h4>Sorry, looks like that city isn't in our database! Please try again with a different one.</h4>
+        </div>
+        `)
+        $('header').html(generateHeader());
+        $('#backToSearch').removeClass('hidden');
+    }
 };
 
 
@@ -325,7 +351,6 @@ function formatSearch() {
         event.preventDefault();
         store.city = $('#citysearch').val().toLowerCase();
         let state = $('#statesearch').val();
-        console.log(store.city)
         let query = encodeURI(store.zomatoUrl + "/cities?q=" + store.city)
         // is there a better way to pass state to displayCityMatches()??
         makeFirstFetch(query, state);
@@ -338,9 +363,9 @@ function formatSearch() {
 function generateHeader() {
     return `
  
-        <input type="submit" value="Back to Search" id="backToSearch" class="hidden" >
+        <input type="button" value="Back to Search" id="backToSearch" class="hidden backtosearchbutton" >
         <h1>Restaurant Finder</h1>
-        <input type="button" value="Back to Cuisine Choice" id="backToCuisine" class="hidden">
+        <input type="button" value="Cuisine Choice" id="backToCuisine" class="hidden cuisinechoicebutton">
 
     `
 }
@@ -350,11 +375,11 @@ function generateSearchScreen() {
     return `
     <div class="search-screen">
         <form class="search-form location">
-            <formfield>
+            <fieldset class="ffield">
                 <legend><h3>Where do you want to eat?</h3></legend>
                 <p>
                     <label for="citysearch">City: </label>
-                    <input type="text" placeholder="boston" id="citysearch" class="search" required>
+                    <input type="text" placeholder="Boston" id="citysearch" class="search" required>
                 </p>
                 <p>
                     <label for="statesearch">State: </label>
@@ -363,7 +388,7 @@ function generateSearchScreen() {
                 <p>
                     <input type="submit" id="submitsearch" class="submitsearch" value="Search">
                 </p>
-            </formfield>
+            </fieldset>
         </form>
     </div>
     `
