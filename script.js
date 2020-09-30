@@ -105,6 +105,7 @@ function chooseRandomImage() {
     console.log(photoNumber);
     return photo;
 }
+//||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 function generateRestaurantDivs(responseJson) {
     let divs = "";
@@ -157,7 +158,7 @@ function generateRestaurantDivs(responseJson) {
             $('main').append(`'something went wrong!' ${err.message}`);
         });
 }
-
+// ensures cuisine input is formatted properly
 function formatCuisineSearch(string) {
     let string2 = string.toLowerCase();
     let string3 = string2.charAt(0).toUpperCase() + string.slice(1);
@@ -167,6 +168,9 @@ function formatCuisineSearch(string) {
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
  //----------------------GET CITY COORDINATES & SAVE TO STORE OBJ------------------------------
+
+ //long function that checks if the cuisine input exists in the city, and if the results request is 1-20, if so
+ // make last fetch to zomato api to return results
 function checkCuisineArray() {
     $('main').on('submit', '.food', event => {
         event.preventDefault();
@@ -201,7 +205,7 @@ function checkCuisineArray() {
         
     })
 }
-
+//called below (line 290)
  function renderMoreCriteriaScreen() {
     return `
     <div class="search-screen">
@@ -226,6 +230,7 @@ function checkCuisineArray() {
 }
 //---------------GETTING LOCATION DATA-----------------------------------
 
+//fetch to bing maps to get long and lat of city, and stores to store obj
 function storeLongAndLat(responseJson) {
     store.coordinates = responseJson.resourceSets[0].resources[0].bbox;
 }
@@ -248,6 +253,9 @@ function formatMapsQuery(name) {
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
 //----------------GETTING CUISINE ARRAY #---------------------------------
+
+//creates an array of the cuisine choices of the city chosen, to be referenced later
+// in cuisine choice validation.
 function pushToCuisineObj(responseJson) {
     store.cuisines.push(responseJson.cuisines)
 }
@@ -262,7 +270,7 @@ function pushToCuisineObj(responseJson) {
         .then(response => response.json())
         .then(responseJson => pushToCuisineObj(responseJson))
         .catch(err => {
-            $('header').append(`'Cuisine is spighet!' ${err.message}`);
+            $('header').append(`'something went wrong!' ${err.message}`);
         });
 }
 function formatCuisineQuery(state) {
@@ -270,6 +278,10 @@ function formatCuisineQuery(state) {
     makeCuisineFetch(cuisineQuery)
 }
 
+//this function stores the city's id (for zomato api) and calls it to return all the cuisine
+// choices available in that city (some cities have more options than others) store.name was assigned to 
+// the address of main st, {city}, {state}, to be used in the bing maps api to return the longitude and latitude
+// of the city, becuase it's required in a different zomato fetch later.
 function saveLongAndLatAndCuisine() {
     $('main').on('click', '.item', event => {
         event.preventDefault();
@@ -278,6 +290,7 @@ function saveLongAndLatAndCuisine() {
         store.cityId = $(event.currentTarget).attr('id')
         let name = store.name;
         let state = store.cityId;
+// renders final screen of cuisine input and results count
         $('main').html(renderMoreCriteriaScreen());
         formatMapsQuery(name);
         formatCuisineQuery(state)
@@ -288,6 +301,9 @@ function saveLongAndLatAndCuisine() {
 
 //--------------------- CREATE BACK BUTTON TO RETURN TO SEARCH SCREEN-----------------
 
+
+//if the user clicks the rendered button to return to the city/state choice, the button disapears and ensures the other button
+// not yet rendered, stays hidden
 function clickBackToSearch() {
     $('header').on('click', '#backToSearch', event => {
         event.preventDefault()
@@ -301,9 +317,18 @@ function clickBackToSearch() {
 
 //------------------- EVENT LISTENER FOR STATE AND CITY INPUTS----------------------
 
+// in general, I tried to group chunks of code together that all run or render at the same time
+// below are all code that run as soon as the event listener is triggered. This grouping is done
+// throughout the JS doc
+
+
 function displayCityMatches(responseJson, state) {
+    //renders divs of info based on how many are returned
     let divs = "";
     let matchArray = responseJson.location_suggestions;
+    //for loop checks if the state initials match the state the user input, and only
+    // returns the cities with a state that matches that user input from prev screen
+    // user can select the city that matches what they were looking for
     for (let i = 0; i < matchArray.length; i++) {
         if (matchArray[i].state_code === state) {
         divs += `
@@ -319,6 +344,7 @@ function displayCityMatches(responseJson, state) {
         )
         $('header').html(generateHeader())
         $('#backToSearch').removeClass('hidden')
+        //If no city matches exist in the state, notify the user their selection was invalid.
     } else if (divs === ``) {
         $('main').html(`
         <div class="city-not-found">
@@ -345,7 +371,7 @@ function makeFirstFetch(query, state) {
         });
 };
 
-
+//alters input so they can be processed properly and then adds them to the fetch query
 function formatSearch() {
     $('main').on('submit', '.location', event => {
         event.preventDefault();
@@ -358,8 +384,11 @@ function formatSearch() {
     })
 };
 //|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
 //-------------------------INITIAL SCREEN RENDERING---------------------------------
 
+//used jquery to render header with 2 hidden buttons that will be selectively un-hidden later. it was
+// easier to create and hide them now rather than create them later and re-style the header
 function generateHeader() {
     return `
  
@@ -370,7 +399,8 @@ function generateHeader() {
     `
 }
 
-
+//creates first 2 inputs of a city and the state dropdown menu is pulled from the list at the top
+// of the JS page.
 function generateSearchScreen() {
     return `
     <div class="search-screen">
