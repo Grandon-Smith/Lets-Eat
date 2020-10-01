@@ -8,7 +8,15 @@ link to live app: <a href="https://thinkfulgrandon.github.io/restaurant-finder/"
 The following are images depicting each of the screens a user can expect to come across
 as they navigate the app.
 
+![Homepage](photos/homepage-screenshot.PNG)
 
+![City Input](photos/city-state-screenshot.PNG)
+
+![Rendered Cities](photos/city-render-screenshot.PNG)
+
+![Cuisine Choice Input](photos/cuisine-choice-screenshot.PNG)
+
+![Rendered Restaurants](photos/rendered-choices-screenshot.PNG)
 
 stacks used:
     HTML5
