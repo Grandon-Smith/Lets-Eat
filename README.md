@@ -9,7 +9,7 @@ The following are images depicting each of the screens a user can expect to come
 as they navigate the app.
 
 
-![image of cuisine choice input](photos/homepage-screenshot.png")
+![homepage](photos/homepage-screenshot.png)
 
 ![image of cuisine choice input](city-state-screenshot.png)
 
