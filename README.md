@@ -9,16 +9,6 @@ The following are images depicting each of the screens a user can expect to come
 as they navigate the app.
 
 
-![homepage](photos/homepage-screenshot.PNG)
-
-![image of cuisine choice input](city-state-screenshot.png)
-
-![rendered cities](./city-render-screenshot.png)
-
-![image of cuisine choice input](../cuisine-choice-screenshot.png)
-
-![image of rendered results](./photos/rendered-choices-screenshot.png)
-
 
 stacks used:
     HTML5
