@@ -119,7 +119,7 @@ function generateRestaurantDivs(responseJson) {
         <h4 class="restname">${store.data.restaurants[i].restaurant.name}</h4>
         <div class="restcontent">
             <div class="imgcontainer">
-                <img src=${chooseRandomImage()} class="restimg">
+                <img src=${chooseRandomImage()} class="restimg" alt="a plate of food at a restaurant">
             </div>
             <div class="resttext">
                 <p><span class="label">Call:</span> <a href="tel:${store.data.restaurants[i].restaurant.phone_numbers[0]}">
