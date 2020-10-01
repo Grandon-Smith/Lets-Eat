@@ -9,25 +9,15 @@ The following are images depicting each of the screens a user can expect to come
 as they navigate the app.
 
 
-<p>
-![image of cuisine choice input](/photos/homepage-screenshot.png")
-</p>
+![image of cuisine choice input](photos/homepage-screenshot.png")
 
-
-
-<p>
 ![image of cuisine choice input](city-state-screenshot.png)
-</p>
 
+![rendered cities](./city-render-screenshot.png)
 
+![image of cuisine choice input](../cuisine-choice-screenshot.png)
 
-<p>
-![rendered cities](photos/city-render-screenshot.png)
-</p>
-<p>
-![image of cuisine choice input](..cuisine-choice-screenshot.png)
-</p>
-![image of rendered results](..photos/rendered-choices-screenshot.png)
+![image of rendered results](./photos/rendered-choices-screenshot.png)
 
 
 stacks used:
