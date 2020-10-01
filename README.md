@@ -8,6 +8,7 @@ link to live app: <a href="https://thinkfulgrandon.github.io/restaurant-finder/"
 The following are images depicting each of the screens a user can expect to come across
 as they navigate the app.
 
+![Homepage](photos/homepage-screenshot.PNG)
 
 ![Homepage](photos/homepage-screenshot.PNG)
 
